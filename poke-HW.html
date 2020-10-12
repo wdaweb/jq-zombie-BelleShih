@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <title>Document</title>
+    <style>
+
+        html,
+        body {
+            margin: auto;
+        }
+
+        body{
+            width: 1280px;
+            position: relative;
+            background: black;
+            color: white;
+            font-family: 'Press Start 2P', cursive;
+        }
+        
+        #map{
+            height: 100vh;
+            position: absolute;
+            left: 50%;            
+            transform: translate(-50%);
+            z-index: -1;            
+        }
+
+        #game{
+            width: 1100px;
+            height: 930px;
+            position: absolute;
+            left: 50%;
+            /* top: 50%; */
+            transform: translate(-50%);
+            cursor: url(./images/pokemonball.png) 15 15, auto;            
+            z-index: 1;            
+        }
+
+        #btn-start{            
+            background: #81ac46;
+            display: inline-block;
+            position: relative;
+            top: 300px;
+            left: 60px;
+            text-align: center;
+            font-size: 25px;
+            padding: 20px;
+            font-family: 'Press Start 2P', cursive;            
+            color: white; 
+            cursor: pointer;        
+        }
+
+        #btn-start:hover{
+            background: #426d1e;
+        }
+        
+        #logo{
+            position: absolute;
+            top: 15px;
+            left: 30px;
+            width: 200px;
+        }
+
+        #info{
+            position: absolute;
+            top: 700px;
+            left: 100%;
+            width: 180px;
+            height: 190px;
+            background: white;
+            color: black;
+            padding: 20px;
+        }
+
+        #left{
+            position: relative;
+            left: -270px;
+
+        }
+       
+        #rule{
+            color: white;
+            position: relative;
+            top: 220px;
+            left: 40px;
+            border: 5px solid white;
+            width: 200px;
+            height: 400px;
+        }
+        
+        #text{
+            font-size: 40px;
+            position: relative;
+            top: 150px;
+            left: 10px;
+            line-height: 40px;
+        }
+
+        table{
+            padding: 10px;
+        }       
+        
+        td img {
+            width: 30px;
+        }
+
+        #line{
+            width: 150px;
+            height: 2px;
+            background: black;
+        }
+        
+    </style>
+</head>
+<body>
+    
+    <img src="./images/map.jpg" id="map">
+    <div id="game">
+        <!-- <img src="./images/pokemon1.png" id="pokemon1"> -->
+        
+    </div>
+    <img src="./images/logo.png" id="logo" class="animate__animated animate__lightSpeedInLeft">
+    <div id="left">
+    <div id="text">
+        SPEEDY 
+        <br />
+        POKEMON
+    </div>   
+        <div id="rule">
+        <table>
+            <tr>
+                <td style="height:55px; border-bottom: 2px solid white;">
+                    <img src="./images/pokemon19.png">
+                </td>
+                <td style="border-bottom: 2px solid white; text-align: center">+20</td>
+            </tr>
+            <tr>
+                <td style="height:55px; border-bottom: 2px solid white;">
+                    <img src="./images/pokemon18.png">
+                </td>
+                <td style="border-bottom: 2px solid white; text-align: center">+10</td>
+            </tr>
+            
+            <tr>
+                <td style="height:200px; border-bottom: 2px solid white;"> 
+                    <img src="./images/pokemon0.png">
+                    <img src="./images/pokemon1.png">
+                    <img src="./images/pokemon2.png">
+                    <img src="./images/pokemon3.png">
+                    <img src="./images/pokemon4.png">
+                    <img src="./images/pokemon5.png">
+                    <img src="./images/pokemon6.png">
+                    <img src="./images/pokemon7.png">
+                    <img src="./images/pokemon8.png">
+                    <img src="./images/pokemon9.png">
+                    <img src="./images/pokemon10.png">
+                    <img src="./images/pokemon11.png">
+                    <img src="./images/pokemon12.png">
+                    <img src="./images/pokemon13.png">
+                    <img src="./images/pokemon14.png">
+                    <img src="./images/pokemon15.png">
+                    <img src="./images/pokemon16.png">                    
+                    
+                </td>
+                <td style="border-bottom: 2px solid white; text-align: center">+1</td>
+            </tr>
+            <tr>
+                <td style="height:55px">
+                    <img src="./images/pokemon17.png">
+                </td>
+                <td style="text-align: center">-1</td>
+            </tr>
+        </table>
+     </div> 
+        <input type="button" value="START" id="btn-start">
+    </div>
+    
+    <div id="info">
+    <p>SCORE: <span id="text-score">0</span></p>
+    <p>TIME: <span id="text-time">20</span>s</p>
+    <div id="line"></div>
+    <br>
+    <p>PLAYER: <span id="text-highplayer"></span></p>    
+    <p>SCORE: <span id="text-highscore"></span></p>
+    </div>
+    <script src="jquery-3.5.1.min.js"></script>
+    <script>
+        let score = 0
+        let time = 20
+
+        let id = 0
+
+        let highscore = { name: '', score: 0 }        
+        let highscoreStorage = JSON.parse( localStorage.getItem('highscore') )
+        if( highscoreStorage !== null ) {
+            highscore = highscoreStorage
+            $('#text-highplayer').text( highscore.name )
+            $('#text-highscore').text( highscore.score )
+        }
+
+        const rand = (num) => {
+            return Math.floor( Math.random() * num )
+        }
+
+        const movepokemon = (id) => {
+            $(`#pokemon${id}`).animate({
+                "left": rand(90) + "%"
+            }, 1000)
+            .animate({
+                "top": rand(90) + "%"
+            }, 1000)
+            .animate({
+                "right": rand(90) + "%"
+            }, 1000)
+            .animate({
+                "bottom": rand(90) + "%"
+            }, 1000, function(){
+                movepokemon(id)
+            })
+            
+        }
+            
+
+        $('#btn-start').click(function(){
+            $(this).attr( 'disabled', true )
+            score = 0
+            $('#text-score').text(score)
+            time = 20
+            $('#text-time').text(time)
+
+            let timer = setInterval(function(){
+                time--
+                $('#text-time').text(time)
+
+                if( time === 0 ) {
+                    clearInterval(timer)
+                    $('#btn-start').attr( 'disabled', false )
+                    $('#game img').remove()
+
+                    setTimeout(() => {
+                        alert(`TIME OUT! 你得了 ${score} 分！`)
+
+                        if(highscoreStorage === null || highscore.score < score) {               
+
+                            const name = prompt('恭喜你獲得最高分!請輸入你的英文名字')
+                            highscore.score = score                
+                            highscore.name = name || '路人'
+
+                            localStorage.setItem( 'highscore', JSON.stringify(highscore) )
+                            $('#text-highplayer').text( highscore.name )
+                            $('#text-highscore').text( highscore.score )
+                        }
+                    }, 100) 
+
+                } else {                
+                    if( rand(19) < 17 ) {
+                        $('#game').prepend(`<img src="./images/pokemon${rand(20)}.gif" id="pokemon${id}">`)
+                        // $(`#pokemon${id}`).parent().css({position: 'relative'});
+                        $(`#pokemon${id}`).css({
+                            left: rand(100) + "%",
+                            top: rand(100) + "%",
+                            position:'absolute'
+                        })
+                        movepokemon(id)
+
+                        id++
+                    }
+                }
+            }, 1000)
+        })
+        
+            // 點到小智扣一分
+        $('#game').on('click', 'img', function(){  
+            if ($(this).attr('src') === './images/pokemon17.gif') {
+                score -= 2   
+                $('#text-score').text(score)                                
+            }
+            // 點到噴火龍加十分
+            if ($(this).attr('src') === './images/pokemon18.gif') {
+                score += 9   
+                $('#text-score').text(score)                                
+            }
+            // 點到金鯉魚王加二十分
+            if ($(this).attr('src') === './images/pokemon19.gif') {
+                score += 19  
+                $('#text-score').text(score)                                
+            }
+        })
+
+        // 一般加一分
+        $('#game').on('click', 'img', function(){             
+          if ($(this).attr('src') != './images/pokemon17.gif') {
+            $(this).attr('src', './images/pokemonget.png')
+          } else {
+            $(this).attr('src', './images/pokemonget-no.png')  
+          }
+            $(this).stop(true, false)
+            $(this).css('pointer-events', 'none')
+            score++
+            $('#text-score').text(score)
+
+        })
+
+
+
+    </script>
+</body>
+</html>
